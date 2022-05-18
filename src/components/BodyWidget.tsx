@@ -1,9 +1,10 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 import { TrayWidget } from './TrayWidget.tsx';
-import { Application } from '../Application';
+import { Application } from './Application';
 import { TrayItemWidget } from './TrayItemWidget.tsx';
 import { DefaultNodeModel } from '@projectstorm/react-diagrams';
+import TSCustomNodeModel from './TSCustomNodeModel.tsx';
 import { CanvasWidget } from '@projectstorm/react-canvas-core';
 import { DemoCanvasWidget } from '../helpers/DemoCanvasWidget.tsx';
 import styled from '@emotion/styled';
@@ -61,23 +62,23 @@ export class BodyWidget extends React.Component<BodyWidgetProps> {
 							var data = JSON.parse(event.dataTransfer.getData('storm-diagram-node'));
 							var nodesCount = _.keys(this.props.app.getDiagramEngine().getModel().getNodes()).length;
 
-							var node: DefaultNodeModel = null;
+							var node: TSCustomNodeModel = null;
 							switch (data.type) {
 								case 'in':
-									node = new DefaultNodeModel('Input Source' + (nodesCount + 1), 'rgb(0,255,0)');
+									node = new TSCustomNodeModel({name:'Input Source' + (nodesCount + 1), color:'rgb(0,255,0)',logicaleffort:10});
 									node.addOutPort('Out');
 									break;
 								case 'out':
-									node = new DefaultNodeModel('Output Source ' + (nodesCount + 1), 'rgb(255,0,0)');
+									node = new TSCustomNodeModel({name:'Output Source ' + (nodesCount + 1), color:'rgb(255,0,0)',logicaleffort:10});
 									node.addInPort('In');
 									break;
 								case 'inverter':
-									node = new DefaultNodeModel('Inverter ' + (nodesCount + 1), 'rgb(0,192,255)');
+									node = new TSCustomNodeModel({name:'Inverter ' + (nodesCount + 1), color:'rgb(0,192,255)',logicaleffort:10});
 									node.addOutPort('Out');
 									node.addInPort('In');
 									break;
 								case 'nand':
-									node = new DefaultNodeModel('NAND ' + (nodesCount + 1), 'rgb(0,192,255)');
+									node = new TSCustomNodeModel({name:'NAND ' + (nodesCount + 1), color:'rgb(0,192,255)',logicaleffort:10});
 									node.addInPort('In 1');
 									node.addInPort('In 2');
 									node.addOutPort('Out');
