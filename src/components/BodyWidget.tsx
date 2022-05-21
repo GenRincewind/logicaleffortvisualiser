@@ -217,7 +217,7 @@ export class BodyWidget extends React.Component<BodyWidgetProps> {
 									body: JSON.stringify(basic)
 								};
 								this.setState({ loading: true });
-								fetch('http://lukasnel.pythonanywhere.com/calculate_capacitance', requestOptions)
+								fetch('https://logical-effort-calculator.vercel.app/calculate_capacitance', requestOptions)
 									.then(response => response.json())
 									.then(data => {
 										alert('successful');
@@ -237,6 +237,8 @@ export class BodyWidget extends React.Component<BodyWidgetProps> {
 									}
 									).catch(error => {
 										console.error(error);
+										this.setState({ loading: false });
+
 										alert('Internal Server Error');
 									});;
 							}}>Calculate Output Capacitance</button><br></br>
