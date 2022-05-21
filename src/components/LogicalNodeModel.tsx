@@ -11,6 +11,7 @@ export interface LogicalNodeModelOptions extends BasePositionModelOptions {
 	parasiticapacitance?: number;
 	inherent_capacitance?: number;
 	outputcapacitance?: number;
+	inputcapacitance?: number;
 }
 
 export interface LogicalNodeModelGenerics extends NodeModelGenerics {
@@ -39,6 +40,7 @@ export default class LogicalNodeModel extends NodeModel<LogicalNodeModelGenerics
 			inherent_capacitance:10,
 			parasiticapacitance: 10,
 			outputcapacitance: null,
+			inputcapacitance: null,
 			...options
 		});
 		this.portsOut = [];
@@ -135,7 +137,9 @@ export default class LogicalNodeModel extends NodeModel<LogicalNodeModelGenerics
 	setOutputCapacitance(outputcapacitance) {
 		this.options.outputcapacitance = outputcapacitance;
 	}
-
+	setInputCapacitance(inputcapacitance) {
+		this.options.inputcapacitance = inputcapacitance;
+	}
 	getInPorts(): DefaultPortModel[] {
 		return this.portsIn;
 	}

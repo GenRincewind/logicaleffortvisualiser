@@ -193,6 +193,16 @@ export class BodyWidget extends React.Component<BodyWidgetProps> {
 		}
 		this.props.app.getDiagramEngine().repaintCanvas();
 	}
+	setInputCapacitance = (data) => {
+		for (const [key, value] of Object.entries<any>(data)) {
+			const node = this.props.app.getDiagramEngine().getModel().getNode(key);
+			console.log('capacitance', key, value, node);
+
+			this.props.app.getDiagramEngine().getModel().getNode(key).setInputCapacitance(value);
+
+		}
+		this.props.app.getDiagramEngine().repaintCanvas();
+	}
 	render() {
 		return (
 			<S.Body>
@@ -220,7 +230,7 @@ export class BodyWidget extends React.Component<BodyWidgetProps> {
 								fetch('https://logical-effort-calculator.vercel.app/calculate_capacitance', requestOptions)
 									.then(response => response.json())
 									.then(data => {
-										alert('successful');
+										
 										console.log("data", data);
 										this.setOutputCapacitance(data);
 										setTimeout(() => {
@@ -241,7 +251,32 @@ export class BodyWidget extends React.Component<BodyWidgetProps> {
 
 										alert('Internal Server Error');
 									});;
+									fetch('https://logical-effort-calculator.vercel.app/calculate_capacitance_in', requestOptions)
+									.then(response => response.json())
+									.then(data => {
+										alert('successful');
+										console.log("data", data);
+										this.setInputCapacitance(data);
+										setTimeout(() => {
+											this.props.app.getDiagramEngine().repaintCanvas();
+
+											var str = JSON.stringify(this.props.app.getDiagramEngine().getModel().serialize());
+											console.log("str", str);
+											this.props.app.setModel(str);
+											this.setState({ loading: false });
+
+										}, 500
+										)
+
+									}
+									).catch(error => {
+										console.error(error);
+										this.setState({ loading: false });
+
+										alert('Internal Server Error');
+									});;
 							}}>Calculate Output Capacitance</button><br></br>
+							
 						<button onClick={() => {
 							var str = (this.props.app.getDiagramEngine().getModel().serialize());
 

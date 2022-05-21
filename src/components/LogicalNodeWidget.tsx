@@ -62,7 +62,10 @@ export class LogicalNodeWidget extends React.Component<LogicalNodeProps> {
 	generatePort = (port) => {
 		return <DefaultPortLabel engine={this.props.engine} port={port} key={port.getID()} />;
 	};
-
+	calculateElectricalEffort(ic,oc){
+		if(!ic || !oc)return 0;
+		return oc/ic;
+	}
 	render() {
 		console.log("console", this.props.node.getOptions());
 		return (
@@ -81,7 +84,17 @@ export class LogicalNodeWidget extends React.Component<LogicalNodeProps> {
 				</S.Title>
 				{this.props.node.getOptions().outputcapacitance ? <S.Title>
 
-					<S.TitleName>Output Capacitance: {this.props.node.getOptions().outputcapacitance}</S.TitleName>
+					<S.TitleName>Output Capacitance: {Math.round(this.props.node.getOptions().outputcapacitance * 100) / 100}</S.TitleName>
+
+				</S.Title> : <></>}
+				{this.props.node.getOptions().inputcapacitance ? <S.Title>
+
+					<S.TitleName>Input Capacitance: {Math.round(this.props.node.getOptions().inputcapacitance * 100) / 100}</S.TitleName>
+
+				</S.Title> : <></>}
+				{this.props.node.getOptions().inputcapacitance ? <S.Title>
+
+					<S.TitleName>Electrical Effort: {Math.round(this.calculateElectricalEffort(this.props.node.getOptions().inputcapacitance,this.props.node.getOptions().outputcapacitance)  * 100) / 100}</S.TitleName>
 
 				</S.Title> : <></>}
 				<S.Ports>
