@@ -3,22 +3,26 @@ import { NodeModel, NodeModelGenerics, PortModelAlignment } from '@projectstorm/
 import { DefaultPortModel } from '@projectstorm/react-diagrams';
 import { BasePositionModelOptions, DeserializeEvent } from '@projectstorm/react-canvas-core';
 
-export interface TSCustomNodeModelOptions extends BasePositionModelOptions {
+export interface LogicalNodeModelOptions extends BasePositionModelOptions {
 	name?: string;
 	color?: string;
-	logicaleffort?:number;
+	logicaleffort?: number;
+	electricaleffort?: number;
+	parasiticapacitance?: number;
+	inherent_capacitance?: number;
+	outputcapacitance?: number;
 }
 
-export interface TSCustomNodeModelGenerics extends NodeModelGenerics {
-	OPTIONS: TSCustomNodeModelOptions;
+export interface LogicalNodeModelGenerics extends NodeModelGenerics {
+	OPTIONS: LogicalNodeModelOptions;
 }
 
-export default class TSCustomNodeModel extends NodeModel<TSCustomNodeModelGenerics> {
+export default class LogicalNodeModel extends NodeModel<LogicalNodeModelGenerics> {
 	protected portsIn: DefaultPortModel[];
 	protected portsOut: DefaultPortModel[];
 
 	constructor(name: string, color: string);
-	constructor(options?: TSCustomNodeModelOptions);
+	constructor(options?: LogicalNodeModelOptions);
 	constructor(options: any = {}, color?: string) {
 		if (typeof options === 'string') {
 			options = {
@@ -30,7 +34,11 @@ export default class TSCustomNodeModel extends NodeModel<TSCustomNodeModelGeneri
 			type: 'ts-custom-node',
 			name: 'Untitled',
 			color: 'rgb(0,192,255)',
-			logicaleffort:10,
+			logicaleffort: 1,
+			electricaleffort: 10,
+			inherent_capacitance:10,
+			parasiticapacitance: 10,
+			outputcapacitance: null,
 			...options
 		});
 		this.portsOut = [];
@@ -97,6 +105,7 @@ export default class TSCustomNodeModel extends NodeModel<TSCustomNodeModelGeneri
 		this.options.name = event.data.name;
 		this.options.color = event.data.color;
 		this.options.logicaleffort = event.data.logicaleffort;
+		this.options = event.data.options;
 		this.portsIn = _.map(event.data.portsInOrder, (id) => {
 			return this.getPortFromID(id);
 		}) as DefaultPortModel[];
@@ -105,11 +114,14 @@ export default class TSCustomNodeModel extends NodeModel<TSCustomNodeModelGeneri
 		}) as DefaultPortModel[];
 	}
 
+
 	serialize(): any {
 		return {
 			...super.serialize(),
 			name: this.options.name,
 			color: this.options.color,
+			inherent_capacitance: this.options.inherent_capacitance,
+			options:this.options,
 			logicaleffort: this.options.logicaleffort,
 			portsInOrder: _.map(this.portsIn, (port) => {
 				return port.getID();
@@ -118,6 +130,10 @@ export default class TSCustomNodeModel extends NodeModel<TSCustomNodeModelGeneri
 				return port.getID();
 			})
 		};
+	}
+
+	setOutputCapacitance(outputcapacitance) {
+		this.options.outputcapacitance = outputcapacitance;
 	}
 
 	getInPorts(): DefaultPortModel[] {

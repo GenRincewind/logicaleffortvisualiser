@@ -5,5 +5,6 @@ import { Application } from './components/Application.tsx';
 
 export default () => {
 	var app = new Application();
+    
 	return <BodyWidget app={app} />;
 };

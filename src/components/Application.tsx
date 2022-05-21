@@ -1,6 +1,6 @@
 import * as SRD from '@projectstorm/react-diagrams';
-import TSCustomNodeFactory  from './TSCustomNodeFactory.tsx';
-import  TSCustomNodeModel from './TSCustomNodeModel.tsx';
+import LogicalNodeFactory  from './LogicalNodeFactory.tsx';
+import  LogicalNodeModel from './LogicalNodeModel.tsx';
 import {
 	DefaultDiagramState,
 	DiagramEngine,
@@ -10,10 +10,9 @@ import {
 import {
 	DefaultLabelFactory,
 	DefaultLinkFactory,
-	DefaultNodeFactory,
-	DefaultPortFactory
+	DefaultNodeFactory
 } from '@projectstorm/react-diagrams-defaults';
-
+import { LogicalPortFactory } from '../components/port/LogicalPortFactory.tsx';
 import { PathFindingLinkFactory } from '@projectstorm/react-diagrams-routing';
 import { SelectionBoxLayerFactory, CanvasEngineOptions } from '@projectstorm/react-canvas-core';
 /**
@@ -32,10 +31,10 @@ export class Application {
 		engine.getLayerFactories().registerFactory(new SelectionBoxLayerFactory());
 
 		engine.getLabelFactories().registerFactory(new DefaultLabelFactory());
-		engine.getNodeFactories().registerFactory(new TSCustomNodeFactory()); // i cant figure out why
+		engine.getNodeFactories().registerFactory(new LogicalNodeFactory()); // i cant figure out why
 		engine.getLinkFactories().registerFactory(new DefaultLinkFactory());
 		engine.getLinkFactories().registerFactory(new PathFindingLinkFactory());
-		engine.getPortFactories().registerFactory(new DefaultPortFactory());
+		engine.getPortFactories().registerFactory(new LogicalPortFactory());
 
 		// register the default interaction behaviours
 		engine.getStateMachine().pushState(new DefaultDiagramState());
@@ -49,19 +48,23 @@ export class Application {
 
 		this.newModel();
 	}
-
+	public setModel(str){
+		var model2 = new SRD.DiagramModel();
+		model2.deserializeModel(JSON.parse(str), this.diagramEngine);
+		this.diagramEngine.setModel(model2);
+	}
 	public newModel() {
 		this.activeModel = new SRD.DiagramModel();
 
 		this.diagramEngine.setModel(this.activeModel);
 
 		//3-A) create a default node
-		var node1 = new TSCustomNodeModel('Node 1', 'rgb(0,192,255)');
+		var node1 = new LogicalNodeModel('Input Source 1', 'rgb(0,192,255)');
 		let port = node1.addOutPort('Out');
 		node1.setPosition(100, 100);
 
 		//3-B) create another default node
-		var node2 = new TSCustomNodeModel('Node 2', 'rgb(192,255,0)');
+		var node2 = new LogicalNodeModel('Output Source 2', 'rgb(192,255,0)');
 		let port2 = node2.addInPort('In');
 		node2.setPosition(400, 100);
 

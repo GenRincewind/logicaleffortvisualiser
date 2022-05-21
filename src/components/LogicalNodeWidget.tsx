@@ -2,7 +2,7 @@ import * as React from 'react';
 import * as _ from 'lodash';
 import { DiagramEngine } from '@projectstorm/react-diagrams-core';
 import { DefaultPortLabel } from '@projectstorm/react-diagrams';
-import { TSCustomNodeModel } from './TSCustomNodeModel';
+import { LogicalNodeModel } from './LogicalNodeModel';
 import styled from '@emotion/styled';
 
 namespace S {
@@ -49,16 +49,16 @@ namespace S {
 	`;
 }
 
-export interface TSCustomNodeProps {
-	node: TSCustomNodeModel;
+export interface LogicalNodeProps {
+	node: LogicalNodeModel;
 	engine: DiagramEngine;
 }
 
 /**
- * TSCustom node that models the TSCustomNodeModel. It creates two columns
+ * Logical node that models the LogicalNodeModel. It creates two columns
  * for both all the input ports on the left, and the output ports on the right.
  */
-export class TSCustomNodeWidget extends React.Component<TSCustomNodeProps> {
+export class LogicalNodeWidget extends React.Component<LogicalNodeProps> {
 	generatePort = (port) => {
 		return <DefaultPortLabel engine={this.props.engine} port={port} key={port.getID()} />;
 	};
@@ -76,9 +76,14 @@ export class TSCustomNodeWidget extends React.Component<TSCustomNodeProps> {
 				</S.Title>
 				<S.Title>
 
-					<S.TitleName>Logical Effort: {this.props.node.getOptions().logicaleffort}</S.TitleName>
+					<S.TitleName>Inherent Capacitance: {this.props.node.getOptions().inherent_capacitance}</S.TitleName>
 
 				</S.Title>
+				{this.props.node.getOptions().outputcapacitance ? <S.Title>
+
+					<S.TitleName>Output Capacitance: {this.props.node.getOptions().outputcapacitance}</S.TitleName>
+
+				</S.Title> : <></>}
 				<S.Ports>
 					<S.PortsContainer>{_.map(this.props.node.getInPorts(), this.generatePort)}</S.PortsContainer>
 					<S.PortsContainer>{_.map(this.props.node.getOutPorts(), this.generatePort)}</S.PortsContainer>
