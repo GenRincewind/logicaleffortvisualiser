@@ -8,7 +8,8 @@ import LogicalNodeModel from './LogicalNodeModel.tsx';
 import { CanvasWidget } from '@projectstorm/react-canvas-core';
 import { DemoCanvasWidget } from '../helpers/DemoCanvasWidget.tsx';
 import styled from '@emotion/styled';
-
+import { Button, Form } from 'react-bootstrap';
+import styles from './BodyWidget.css'
 export interface BodyWidgetProps {
 	app: Application;
 }
@@ -41,7 +42,13 @@ namespace S {
 		position: relative;
 		flex-grow: 1;
 	`;
+
+
 }
+const TrayWidgetStyle = {
+	marginTop: "10px",
+	width: "90%",
+};
 export function Upload({ children, setOutFile, title }) {
 	const [files, setFiles] = React.useState("");
 
@@ -55,13 +62,16 @@ export function Upload({ children, setOutFile, title }) {
 		};
 	};
 	return (
-		<div style={{ textAlign: 'center', width: '100%' }}>
-			<p style={{ color: "white" }}>{title}</p>
+		<div style={{ textAlign: 'center', width: '100%', marginTop:'10px' }}>
+		{/*	<p style={{ color: "white" }}>{title}</p>
 			<div style={{
 				margin: 'auto', textAlign: 'center', paddingLeft: '50%', transform: "translateX(-20%)"
-			}}>
-				<input type="file" onChange={handleChange} />
-			</div>
+			}}>*/}
+				 <Form.Group controlId="formFileLg" className="mb-3" style={{padding:"5px"}}>
+				 <Form.Label style={{ color: "white" }}>{title}</Form.Label>
+				 <Form.Control onChange={handleChange} type="file" size="sm" />
+				 </Form.Group>
+			{/*</div>*/}
 			<br />
 
 		</div>
@@ -215,7 +225,7 @@ export class BodyWidget extends React.Component<BodyWidgetProps> {
 						{/*<TrayItemWidget model={{ type: 'nand' }} name="NAND" color="rgb(0,192,255)" />*/}
 						<TrayItemWidget model={{ type: 'in' }} name="Input Source" color="rgb(0,255,0)" />
 						<TrayItemWidget model={{ type: 'out' }} name="Output Source" color="rgb(255,0,0)" />
-						<button
+						<Button style={TrayWidgetStyle}
 							disabled={this.state.loading}
 							onClick={() => {
 								var str = (this.props.app.getDiagramEngine().getModel().serialize());
@@ -230,7 +240,7 @@ export class BodyWidget extends React.Component<BodyWidgetProps> {
 								fetch('https://logical-effort-calculator.vercel.app/calculate_capacitance', requestOptions)
 									.then(response => response.json())
 									.then(data => {
-										
+
 										console.log("data", data);
 										this.setOutputCapacitance(data);
 										setTimeout(() => {
@@ -251,7 +261,7 @@ export class BodyWidget extends React.Component<BodyWidgetProps> {
 
 										alert('Internal Server Error');
 									});;
-									fetch('https://logical-effort-calculator.vercel.app/calculate_capacitance_in', requestOptions)
+								fetch('https://logical-effort-calculator.vercel.app/calculate_capacitance_in', requestOptions)
 									.then(response => response.json())
 									.then(data => {
 										alert('successful');
@@ -275,9 +285,9 @@ export class BodyWidget extends React.Component<BodyWidgetProps> {
 
 										alert('Internal Server Error');
 									});;
-							}}>Calculate Output Capacitance</button><br></br>
-							
-						<button onClick={() => {
+							}}>Calculate Output Capacitance</Button><br></br>
+
+						<Button style={TrayWidgetStyle} className={styles.trayButton} onClick={() => {
 							var str = (this.props.app.getDiagramEngine().getModel().serialize());
 
 							var basic = this.convertSerializeToGraphModelForm(str);
@@ -292,8 +302,8 @@ export class BodyWidget extends React.Component<BodyWidgetProps> {
 							element.click();
 							alert(JSON.stringify(basic));
 						}
-						}>Download Node Data</button><br></br>
-						<button onClick={() => {
+						}>Download Node Data</Button><br></br>
+						<Button style={TrayWidgetStyle} className={styles.trayButton} onClick={() => {
 							var str = (this.props.app.getDiagramEngine().getModel().serialize());
 
 							console.log("serialize", str);
@@ -307,10 +317,12 @@ export class BodyWidget extends React.Component<BodyWidgetProps> {
 							document.body.appendChild(element);
 							element.click();
 						}
-						}>Download Node Diagram</button>
-						<Upload title="Select Node Diagram File" setOutFile={this.setOutFile}>
-							<button>Upload Node Diagram</button>
-						</Upload>
+						}>Download Node Diagram</Button>
+						<div >
+							<Upload  title="Select Node Diagram File" setOutFile={this.setOutFile}>
+								<Button  className={styles.trayButton}>Upload Node Diagram</Button>
+							</Upload>
+						</div>
 					</TrayWidget>
 					<S.Layer
 						onDrop={(event) => {
